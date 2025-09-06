@@ -68,3 +68,82 @@ php artisan migrate:fresh
 
 # Inicie o servidor da API
 php artisan serve
+
+```
+---
+
+## 📖 Documentação da API
+
+A API requer autenticação para a maioria dos endpoints. O fluxo é: `Registar` -> `Login` (para obter um token) -> `Aceder a outros endpoints` (enviando o token).
+
+**Header de Autenticação:**
+Para todos os endpoints protegidos, envie os seguintes headers:
+- `Accept: application/json`
+- `Authorization: Bearer SEU_TOKEN_DE_ACESSO`
+
+---
+
+### Autenticação
+
+#### `POST /api/register`
+Regista um novo utilizador.
+
+* **Corpo da Requisição (JSON):**
+    ```json
+    {
+        "name": "Nome do Utilizador",
+        "email": "email@exemplo.com",
+        "password": "password123",
+        "password_confirmation": "password123"
+    }
+    ```
+* **Resposta de Sucesso (201 Created):**
+    ```json
+    {
+        "access_token": "1|seuTokenSuperSecreto...",
+        "token_type": "Bearer",
+        "user": { ...dados do utilizador... }
+    }
+    ```
+
+#### `POST /api/login`
+Autentica um utilizador e retorna um token de acesso.
+
+* **Corpo da Requisição (JSON):**
+    ```json
+    {
+        "email": "email@exemplo.com",
+        "password": "password123"
+    }
+    ```
+* **Resposta de Sucesso (200 OK):**
+    ```json
+    {
+        "access_token": "2|outroTokenSuperSecreto...",
+        "token_type": "Bearer",
+        "user": { ...dados do utilizador... }
+    }
+    ```
+---
+
+### Autores (Protegido)
+
+#### `GET /api/autores`
+Lista todos os autores.
+
+#### `POST /api/autores`
+Cria um novo autor.
+
+* **Corpo da Requisição (JSON):**
+    ```json
+    {
+        "nome": "Jane Austen",
+        "pseudonimo": null,
+        "data_nascimento": "1775-12-16",
+        "data_morte": "1817-07-18"
+    }
+    ```
+* **Resposta de Sucesso (201 Created):** Retorna o objeto do autor recém-criado.
+
+*(Você pode continuar este padrão para os outros endpoints: `GET /api/autores/{id}`, `PUT /api/autores/{id}`, `DELETE /api/autores/{id}`, e também para Livros e Gêneros)*
+
